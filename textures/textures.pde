@@ -8,8 +8,9 @@ color sandstoneb =#8b8708;
 color waterb=#0040ff;
 color woodb= #fff700;
 int bs = 30;
+int z=0;
 boolean upkey, downkey, leftkey, rightkey, spacekey,vkey,ckey;
-float lx=2500, ly =height/2- (bs/2), lz=2500;
+float lx=0, ly =height/2- (bs/2), lz=0;
 PVector direction=new PVector(0, -10);
 PVector Pdirection=new PVector(10, 0);
 PImage map, map1, map2, map3, map4, map5, map6; // map7, map8;
@@ -22,11 +23,13 @@ float rotx = PI/4, roty = PI/4;
 int num=1;
 ArrayList<Bullet> Bullets;
 ArrayList<snow> snows;
+ArrayList<Particle> particles;
 
 void setup() {
   size(800, 600, P3D);
  Bullets= new ArrayList<Bullet>();
  snows= new ArrayList<snow>();
+particles= new ArrayList<Particle>();
   //load textures
   cobble = loadImage("cobble.jpg");
   sand = loadImage("sand.jpg");
@@ -55,6 +58,8 @@ void setup() {
 void draw() {
   background(255);
   pushMatrix();
+  
+  println(lx,ly,lz);
 
  // rotateX(rotx);
 //  rotateY(roty);
@@ -102,28 +107,46 @@ void draw() {
   drawFloor(); 
   drawbullets();
   drawSnow();
-
+drawparticles();
  
   popMatrix();
 }
 
 
 void drawSnow(){
-  int z=0;
-   float xlx=random(1,1000); 
-    int xly=1000;
-    float xlz=random(1,1000);
-    PVector direction=new PVector(0,-10);
-  println(z);
-  while (z < 1000) {
-    
 
-     snows.add(new snow(xlx,xly,xlz,direction.x,direction.y));
-   
+int g=0;
+PVector direction=new PVector(0,-10);
+int p=1000;
+  while (z < 500) {
+ snows.add(new snow(lx,ly,lz,direction.x,direction.y));
      z++;
+}
+
+ while ( g < snows.size()) {
+     snow b = snows.get(g);
+     b.act();
+     b.show();
+     g++;
+  
+  
+
   
   }
+}
   
+  void drawparticles(){
+    int j=0;
+    
+    while (j < particles.size()) {
+     Particle b = particles.get(j);
+     b.act();
+     b.show();
+      if (b.lives==0) {
+     particles.remove(j);}
+     j++;
+    
+  }
 }
 void drawbullets() {
     int i = 0;
@@ -134,8 +157,10 @@ void drawbullets() {
      i++;
   
   
-  }
+
   
+  }
+ 
 }
 void drawFloor() {
   int x = 0;
